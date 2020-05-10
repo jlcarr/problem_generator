@@ -1,0 +1,13 @@
+
+Main inspiration:
+https://tex.stackexchange.com/questions/95812/how-to-show-carries-in-long-addition
+
+
+
+TikZ for drawing to help annotate:
+https://wiki.physik.uzh.ch/cms/latex:tikz:electromagnetic_wave
+https://www.youtube.com/watch?v=pcIzeN46ETc
+https://tex.stackexchange.com/questions/475937/how-to-encircle-section-of-matrix-in-latex
+
+THIS PAGE IS FIRE
+https://wiki.physik.uzh.ch/cms/latex:tikz

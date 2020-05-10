@@ -21,7 +21,7 @@ def gen_long_additon(input1, input2):
 	input2 = list(str(input2))
 	output = list(str(output))
 
-	max_len = max(len(input1), len(input2), len(output))
+	max_len = len(output)
 
 	doc = ""
 	doc += "\\documentclass{article}\n"
@@ -38,10 +38,11 @@ def gen_long_additon(input1, input2):
 	input2_latex = " \\\\\n"
 	output_latex = " \\\\\n"
 
+	# Output will always be equal or longer than inputs
 	carry = 0
-	while input1 and input2 and output:
-		digit1 = input1.pop()
-		digit2 = input2.pop()
+	while output:
+		digit1 = input1.pop() if input1 else "\phantom{0}"
+		digit2 = input2.pop() if input2 else ""
 		digit3 = output.pop()
 
 		if carry:
@@ -52,33 +53,12 @@ def gen_long_additon(input1, input2):
 		input2_latex = " & " + digit2 + input2_latex
 		output_latex = " & " + digit3 + output_latex
 
-		carry = (int(digit1)+int(digit2)+carry)//10
+		digit1 = int(digit1) if digit1.isdigit() else 0
+		digit2 = int(digit2) if digit2.isdigit() else 0
+		digit3 = int(digit3)
+		carry = (digit1+digit2+carry)//10
 
-	while input1 and output:
-		digit1 = input1.pop()
-		digit3 = output.pop()
-
-		if carry:
-			input1_latex = " & \overset{" + str(carry) + "}{" + digit1 + "}" + input1_latex
-		else:
-			input1_latex = " & " + digit1 + input1_latex
-		
-		input2_latex = " & " + input2_latex
-		output_latex = " & " + digit3 + output_latex
-		
-		carry = (int(digit1)+carry)//10
-
-	while output:
-		digit3 = output.pop()
-		
-		if carry:
-			input1_latex = " & \overset{" + str(carry) + "}{\phantom{0}}" + input1_latex
-		else:
-			input1_latex = " & " + input1_latex
-
-		input2_latex = " & " + input2_latex
-		output_latex = " & " + digit3 + output_latex
-
+	# Remove initial " & "
 	input1_latex = input1_latex[3:]
 	input2_latex = input2_latex[3:]
 	output_latex = output_latex[3:]
