@@ -4,6 +4,19 @@ A Python module for generating long addition problems in LaTex
 
 import subprocess
 
+def gen_latex_doc(inner_latex):
+	doc = ""
+	doc += "\\documentclass{article}\n"
+	doc += "\\usepackage{array,mathtools}\n"
+	
+	doc += "\\begin{document}\n"
+
+	doc += inner_latex
+	
+	doc += "\\end{document}"
+
+	return doc
+
 
 def gen_long_additon(input1, input2):
 	"""
@@ -24,10 +37,6 @@ def gen_long_additon(input1, input2):
 	max_len = len(output)
 
 	doc = ""
-	doc += "\\documentclass{article}\n"
-	doc += "\\usepackage{array,mathtools}\n"
-	
-	doc += "\\begin{document}\n"
 	doc += "\\begin{equation*}\n"
 
 	doc += "\\setlength\\arraycolsep{1pt}\n"
@@ -72,7 +81,6 @@ def gen_long_additon(input1, input2):
 	doc += "\\end{array}\n"
 	
 	doc += "\\end{equation*}\n"
-	doc += "\\end{document}"
 
 	return doc
 
@@ -80,7 +88,7 @@ def gen_long_additon(input1, input2):
 
 if __name__ == "__main__":
 	file = open('../out/test.tex','w')
-	file.write(gen_long_additon(9756,432))
+	file.write(gen_latex_doc(gen_long_additon(9756,432)))
 	file.close()
 
 	subprocess.call(["pdflatex", "-output-directory=../out", "../out/test.tex"])
