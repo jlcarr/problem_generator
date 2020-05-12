@@ -18,53 +18,61 @@ def gen_latex_doc(inner_latex):
 	return doc
 
 
-def gen_long_additon(input1, input2):
+def gen_long_additon(input1, input2, steps='all'):
 	"""
 	Given two integers this function will return the LaTex code as a string describing their additon
 	"""
-	output = input1 + input2
-
 	# ensure correct orientation
 	if input2>input1:
 		temp = input1
 		input1 = input2
 		input2 = temp
 	
+	# Perorm the actual calculation
+	output = input1 + input2
+	
+	# Set the lists of digits
 	input1 = list(str(input1))
 	input2 = list(str(input2))
 	output = list(str(output))
 
+	# Prepare the number of steps
 	max_len = len(output)
+	if steps == 'all' or steps < 0 or steps > max_len:
+		steps = max_len
 
+	# Set up the document
 	doc = ""
 	doc += "\\begin{equation*}\n"
-
 	doc += "\\setlength\\arraycolsep{1pt}\n"
 	doc += "\\begin{array}{*{"+str(max_len)+"}{c}}\n"
 
-
+	# Each line ends with a new-line
 	input1_latex = " \\\\\n"
 	input2_latex = " \\\\\n"
 	output_latex = " \\\\\n"
 
 	# Output will always be equal or longer than inputs
 	carry = 0
-	while output:
+	for step in range(max_len):
+		# Obtain the digits for the column
 		digit1 = input1.pop() if input1 else "\phantom{0}"
 		digit2 = input2.pop() if input2 else ""
-		digit3 = output.pop()
+		digit3 = output.pop() if step < steps else ""
 
-		if carry:
+		# Draw in carry
+		if carry and step-1 < steps:
 			input1_latex = " & \overset{" + str(carry) + "}{" + digit1 + "}" + input1_latex
 		else:
 			input1_latex = " & " + digit1 + input1_latex
 		
+		# draw in the rest of the column
 		input2_latex = " & " + digit2 + input2_latex
 		output_latex = " & " + digit3 + output_latex
 
+		# calculate the next carry
 		digit1 = int(digit1) if digit1.isdigit() else 0
 		digit2 = int(digit2) if digit2.isdigit() else 0
-		digit3 = int(digit3)
 		carry = (digit1+digit2+carry)//10
 
 	# Remove initial " & "
@@ -72,14 +80,13 @@ def gen_long_additon(input1, input2):
 	input2_latex = input2_latex[3:]
 	output_latex = output_latex[3:]
 
-
+	# Complete the document
 	doc += input1_latex
 	doc += input2_latex
 	doc += "\\hline\n"
 	doc += output_latex
-
-	doc += "\\end{array}\n"
 	
+	doc += "\\end{array}\n"
 	doc += "\\end{equation*}\n"
 
 	return doc
