@@ -5,6 +5,9 @@ A Python module for generating long addition problems in LaTex
 import subprocess
 
 def gen_latex_doc(inner_latex):
+	"""
+	Create the latex page setup
+	"""
 	doc = ""
 	doc += "\\documentclass{article}\n"
 	doc += "\\usepackage{array,mathtools}\n"
@@ -45,12 +48,12 @@ def gen_long_additon(input1, input2, steps='all'):
 	doc = ""
 	doc += "\\begin{equation*}\n"
 	doc += "\\setlength\\arraycolsep{1pt}\n"
-	doc += "\\begin{array}{*{"+str(max_len)+"}{c}}\n"
+	doc += "\\begin{array}{*{"+str(max_len+1)+"}{c}}\n"
 
 	# Each line ends with a new-line
-	input1_latex = " \\\\\n"
-	input2_latex = " \\\\\n"
-	output_latex = " \\\\\n"
+	input1_latex = []
+	input2_latex = []
+	output_latex = []
 
 	# Output will always be equal or longer than inputs
 	carry = 0
@@ -62,13 +65,13 @@ def gen_long_additon(input1, input2, steps='all'):
 
 		# Draw in carry
 		if carry and step-1 < steps:
-			input1_latex = " & \overset{" + str(carry) + "}{" + digit1 + "}" + input1_latex
+			input1_latex.insert(0, " \overset{" + str(carry) + "}{" + digit1 + "}")
 		else:
-			input1_latex = " & " + digit1 + input1_latex
+			input1_latex.insert(0, digit1)
 		
 		# draw in the rest of the column
-		input2_latex = " & " + digit2 + input2_latex
-		output_latex = " & " + digit3 + output_latex
+		input2_latex.insert(0, digit2)
+		output_latex.insert(0, digit3)
 
 		# calculate the next carry
 		digit1 = int(digit1) if digit1.isdigit() else 0
@@ -76,9 +79,17 @@ def gen_long_additon(input1, input2, steps='all'):
 		carry = (digit1+digit2+carry)//10
 
 	# Remove initial " & "
-	input1_latex = input1_latex[3:]
-	input2_latex = input2_latex[3:]
-	output_latex = output_latex[3:]
+	input1_latex.insert(0, '')
+	input2_latex.insert(0, '+')
+	output_latex.insert(0, '')
+
+	input1_latex = ' & '.join(input1_latex)
+	input2_latex = ' & '.join(input2_latex)
+	output_latex = ' & '.join(output_latex)
+
+	input1_latex += " \\\\\n"
+	input2_latex += " \\\\\n"
+	output_latex += " \\\\\n"
 
 	# Complete the document
 	doc += input1_latex
@@ -88,6 +99,7 @@ def gen_long_additon(input1, input2, steps='all'):
 	
 	doc += "\\end{array}\n"
 	doc += "\\end{equation*}\n"
+	print doc
 
 	return doc
 
@@ -95,7 +107,7 @@ def gen_long_additon(input1, input2, steps='all'):
 
 if __name__ == "__main__":
 	file = open('../out/test.tex','w')
-	file.write(gen_latex_doc(gen_long_additon(9756,432)))
+	file.write(gen_latex_doc(gen_long_additon(9756, 432)))
 	file.close()
 
 	subprocess.call(["pdflatex", "-output-directory=../out", "../out/test.tex"])
