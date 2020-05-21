@@ -4,22 +4,6 @@ A Python module for generating long addition problems in LaTex
 
 import subprocess
 
-def gen_latex_doc(inner_latex):
-	"""
-	Create the latex page setup
-	"""
-	doc = ""
-	doc += "\\documentclass{article}\n"
-	doc += "\\usepackage{array,mathtools}\n"
-	
-	doc += "\\begin{document}\n"
-
-	doc += inner_latex
-	
-	doc += "\\end{document}"
-
-	return doc
-
 
 def gen_long_additon(input1, input2, steps='all'):
 	"""
@@ -103,11 +87,3 @@ def gen_long_additon(input1, input2, steps='all'):
 
 	return doc
 
-
-
-if __name__ == "__main__":
-	file = open('../out/test.tex','w')
-	file.write(gen_latex_doc(gen_long_additon(9756, 432)))
-	file.close()
-
-	subprocess.call(["pdflatex", "-output-directory=../out", "../out/test.tex"])
