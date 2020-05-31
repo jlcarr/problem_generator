@@ -2,8 +2,6 @@
 A Python module for generating long addition problems in LaTex
 """
 
-import subprocess
-
 
 def gen_long_additon(input1, input2, steps='all'):
 	"""

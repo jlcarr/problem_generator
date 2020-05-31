@@ -3,6 +3,7 @@ A Python module for generating long addition problems in LaTex
 """
 
 import long_addition
+import long_multiplication
 
 import subprocess
 import os
@@ -40,6 +41,6 @@ def write_latex(latex, file_name, relative_path):
 
 
 if __name__ == "__main__":
-	latex = gen_latex_doc(long_addition.gen_long_additon(9756, 432))
+	latex = gen_latex_doc(long_multiplication.gen_long_multiplication(9756, 432))
 	write_latex(latex, 'test.tex', '../out')
 
